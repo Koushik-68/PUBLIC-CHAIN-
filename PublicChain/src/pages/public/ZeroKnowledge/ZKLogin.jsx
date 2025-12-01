@@ -1,3 +1,5 @@
+// src/pages/public/ZK/ZKLogin.jsx
+
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "../../../axios/api";
@@ -19,7 +21,6 @@ export default function ZKLogin() {
         password,
       });
 
-      // Save user in localStorage for other pages
       localStorage.setItem("zkUser", JSON.stringify(res.data.user));
       navigate("/public/zk/home");
     } catch (err) {
@@ -31,63 +32,74 @@ export default function ZKLogin() {
   };
 
   return (
-    <div className="flex min-h-screen bg-slate-100">
-      <Sidebar active="Zero Knowledge" />
+    <div className="min-h-screen w-full flex">
+      {/* Left sidebar */}
+      <Sidebar active="ZK Login" />
 
-      <div className="flex-1 flex items-center justify-center p-6">
-        <div className="bg-white rounded-xl shadow-md p-8 max-w-md w-full">
-          <h1 className="text-2xl font-bold text-slate-800 mb-2">
-            DigiLocker – Aadhaar Login (Demo)
-          </h1>
-          <p className="text-sm text-slate-500 mb-6">
-            Use demo Aadhaar:
-            <br />
-            <span className="font-mono text-xs">
-              123412341234 / 1234
-            </span> or{" "}
-            <span className="font-mono text-xs">555566667777 / 1111</span>
-          </p>
+      {/* Right side – full screen area */}
+      <div className="flex-1 min-h-screen flex items-center justify-center bg-slate-100">
+        <div className="bg-white w-full max-w-md rounded-2xl shadow-2xl border border-gray-200">
+          {/* Header with DigiLocker logo */}
+          <div className="pt-8 pb-4 px-10 text-center">
+            <img
+              src="https://play-lh.googleusercontent.com/4jlq9fgOmpkCikwBzJYkbXlkruFo1ygmaLaaLcLph9ln8sQgQ78P0-6teFkczp1S0N-l"
+              alt="DigiLocker"
+              className="mx-auto h-24 mb-4 rounded-xl"
+            />
+            <h2 className="text-2xl font-bold text-gray-800">
+              Sign In to your account!
+            </h2>
+          </div>
 
+          {/* Error message */}
           {error && (
-            <div className="mb-4 text-red-600 text-sm bg-red-50 p-2 rounded">
+            <div className="mx-10 mt-2 mb-3 text-sm bg-red-100 border border-red-300 text-red-700 px-3 py-2 rounded-md">
               {error}
             </div>
           )}
 
-          <form onSubmit={handleLogin} className="space-y-4">
+          {/* Form – ONLY Aadhaar + Password */}
+          <form onSubmit={handleLogin} className="px-10 pb-8 pt-4 space-y-4">
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">
-                Aadhaar Number
-              </label>
               <input
                 type="text"
                 value={aadhaar}
                 onChange={(e) => setAadhaar(e.target.value)}
-                className="w-full border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Enter 12 digit Aadhaar"
+                placeholder="Aadhaar Number"
+                maxLength={12}
+                className="w-full border border-gray-300 rounded-md px-4 py-3 text-sm text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">
-                Password / PIN
-              </label>
               <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full border border-slate-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Enter PIN"
+                placeholder="6 digit security PIN"
+                maxLength={6}
+                className="w-full border border-gray-300 rounded-md px-4 py-3 text-sm text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-blue-500 focus:outline-none"
               />
+              {/* <p className="text-right text-xs text-blue-600 mt-1 cursor-pointer">
+                Forgot security PIN?
+              </p> */}
             </div>
 
             <button
               type="submit"
-              className="w-full bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700 transition"
+              className="w-full bg-green-500 hover:bg-green-600 text-white py-3 rounded-md font-semibold text-lg"
             >
-              Login to DigiLocker
+              Sign In
             </button>
           </form>
+
+          {/* Footer link */}
+          {/* <div className="border-t border-gray-200 text-center py-4 text-sm">
+            Don&apos;t have an account?{" "}
+            {/* <span className="text-blue-600 font-semibold cursor-pointer">
+              Sign Up
+            </span> */}
+          {/* </div> */}
         </div>
       </div>
     </div>
