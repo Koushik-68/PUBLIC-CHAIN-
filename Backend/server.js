@@ -1,8 +1,8 @@
+// server.js
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const db = require("./config/db");
-// import init() from db.js
 
 const app = express();
 app.use(cors());
@@ -14,10 +14,17 @@ const authRoutes = require("./routes/authRoutes");
 const projectRoutes = require("./routes/projectRoutes");
 const fundChainRoutes = require("./routes/fundChainRoutes");
 const projectChainRoutes = require("./routes/projectChainRoutes");
+
+// ✅ NEW: Zero Knowledge routes
+const zkRoutes = require("./routes/zkRoutes");
+
 app.use("/api", authRoutes);
 app.use("/api", projectRoutes);
 app.use("/api", fundChainRoutes);
 app.use("/api", projectChainRoutes);
+
+// ✅ Mount ZK routes
+app.use("/api", zkRoutes);
 
 // Basic route
 app.get("/", (req, res) => res.send("Node.js server is running 🚀"));
@@ -28,7 +35,6 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, async () => {
   console.log(`Server running on port ${PORT}`);
 
-  // Try to connect to MySQL when server starts
   try {
     await db.init();
     console.log("✅ MySQL connection initialized successfully!");

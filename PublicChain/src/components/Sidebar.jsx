@@ -4,6 +4,7 @@ import {
   FaMapMarkedAlt,
   FaCommentDots,
   FaLink,
+  FaKey, // ✅ NEW icon
 } from "react-icons/fa";
 
 export default function Sidebar({ active = "Dashboard" }) {
@@ -80,6 +81,14 @@ export default function Sidebar({ active = "Dashboard" }) {
           active={active === "Submit Feedback"}
           href="/public/submit-feedback"
           icon={<FaCommentDots className="w-5 h-5" />}
+        />
+
+        {/* ✅ NEW: Zero Knowledge menu item */}
+        <SidebarButton
+          label="Zero Knowledge"
+          active={active === "Zero Knowledge"}
+          href="/public/zk/login"
+          icon={<FaKey className="w-5 h-5" />}
         />
       </nav>
 

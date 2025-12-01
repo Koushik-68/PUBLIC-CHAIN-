@@ -20,7 +20,12 @@ import GovtBlockChainExplorer from "./pages/Government/GovtBlockChainExplorer";
 import GovernmentDashboard from "./pages/Government/GovernmentDashboard";
 import FundRelease from "./pages/Government/FundRelease";
 import GovernmentProjects from "./pages/Government/GovernmentProjects";
-// import BlockChain from "./pages/Government/BlockChain";
+
+// ✅ Zero Knowledge pages (correct path)
+import ZKLogin from "./pages/public/ZeroKnowledge/ZKLogin";
+import DigiLockerHome from "./pages/public/ZeroKnowledge/DigiLockerHome";
+import GenerateProof from "./pages/public/ZeroKnowledge/GenerateProof";
+import VerifyProof from "./pages/public/ZeroKnowledge/VerifyProof";
 
 import "./index.css";
 import Admin from "./pages/Admin/Admin";
@@ -62,6 +67,7 @@ function App() {
         {/* Main content area: full width. Sidebar at left, router content fills rest */}
         <div className="flex-1 flex w-full">
           <Routes>
+            {/* Public routes */}
             <Route path="/public" element={<PublicView />} />
             <Route
               path="/public/view-all-projects"
@@ -75,6 +81,14 @@ function App() {
               path="/public/submit-feedback"
               element={<SubmitFeedback />}
             />
+
+            {/* ✅ Zero Knowledge DigiLocker routes */}
+            <Route path="/public/zk/login" element={<ZKLogin />} />
+            <Route path="/public/zk/home" element={<DigiLockerHome />} />
+            <Route path="/public/zk/generate" element={<GenerateProof />} />
+            <Route path="/public/zk/verify" element={<VerifyProof />} />
+
+            {/* Auth & Admin */}
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/admin" element={<Admin />} />
@@ -86,7 +100,9 @@ function App() {
               path="/admin/pending-registrations"
               element={<PendingRegistrations />}
             />
-            // Example only – depends on your router setup
+
+            {/* Blockchain public explorer */}
+            {/* Example only – depends on your router setup */}
             <Route
               path="/public/blockchain-explorer"
               element={<BlockchainExplorer />}
@@ -95,6 +111,8 @@ function App() {
               path="/public/project-blockchain"
               element={<BlockchainExplorer />}
             />
+
+            {/* Department */}
             <Route path="/dashboard" element={<DepartmentDashboard />} />
             <Route path="/department/add-project" element={<AddProject />} />
             <Route
@@ -109,6 +127,8 @@ function App() {
               path="/department/view-all-fund-requests"
               element={<ViewAllFundRequests />}
             />
+
+            {/* Government */}
             <Route
               path="/government/dashboard"
               element={<GovernmentDashboard />}
@@ -122,6 +142,8 @@ function App() {
               path="/government/govt-blockchain"
               element={<GovtBlockChainExplorer />}
             />
+
+            {/* Default */}
             <Route path="/" element={<Login />} />
           </Routes>
         </div>

@@ -7,7 +7,7 @@ function getConfig() {
     host: process.env.DB_HOST || "localhost",
     port: parseInt(process.env.DB_PORT || "3306"),
     user: process.env.DB_USER || "root",
-    password: process.env.DB_PASS || "kalleshwar", // ← your password
+    password: process.env.DB_PASS || "kalleshwar",
     database: process.env.DB_NAME || "publicchain",
   };
 
@@ -27,13 +27,14 @@ let pool;
 
 async function init() {
   if (pool) return pool;
+
   pool = mysql.createPool({
     ...DB_CONFIG,
     waitForConnections: true,
     connectionLimit: 10,
   });
 
-  // Ensure 'fund_chain' table exists for blockchain blocks
+  // ----------------- fund_chain table -----------------
   await pool.query(`
     CREATE TABLE IF NOT EXISTS fund_chain (
       id INT AUTO_INCREMENT PRIMARY KEY,
@@ -49,10 +50,10 @@ async function init() {
   try {
     await pool.query(`ALTER TABLE fund_chain MODIFY timestamp BIGINT NOT NULL`);
   } catch (err) {
-    // Ignore error if column is already BIGINT or table doesn't exist yet
+    // ignore if already correct
   }
 
-  // Ensure 'users' table exists (verified_at column already present)
+  // ----------------- users table -----------------
   await pool.query(`
     CREATE TABLE IF NOT EXISTS users (
       id INT AUTO_INCREMENT PRIMARY KEY,
@@ -74,7 +75,7 @@ async function init() {
     ) ENGINE=InnoDB;
   `);
 
-  // Ensure 'project_chain' table exists for project blockchain blocks
+  // ----------------- project_chain table -----------------
   await pool.query(`
     CREATE TABLE IF NOT EXISTS project_chain (
       id INT AUTO_INCREMENT PRIMARY KEY,
@@ -86,7 +87,7 @@ async function init() {
     ) ENGINE=InnoDB;
   `);
 
-  // Ensure 'departments' table exists
+  // ----------------- departments table -----------------
   await pool.query(`
     CREATE TABLE IF NOT EXISTS departments (
       id VARCHAR(32) PRIMARY KEY,
@@ -99,14 +100,15 @@ async function init() {
     `SELECT COUNT(*) as count FROM departments`
   );
   if (deptRows[0].count === 0) {
-    await pool.query(`INSERT INTO departments (id, name) VALUES
+    await pool.query(`
+      INSERT INTO departments (id, name) VALUES
       ('pwd', 'Public Works Department'),
       ('edu', 'Education Department'),
       ('health', 'Health Department')
     `);
   }
 
-  // Ensure 'projects' table exists and department_id is VARCHAR(32)
+  // ----------------- projects table -----------------
   await pool.query(`
     CREATE TABLE IF NOT EXISTS projects (
       id INT AUTO_INCREMENT PRIMARY KEY,
@@ -133,10 +135,10 @@ async function init() {
   try {
     await pool.query(`ALTER TABLE projects DROP FOREIGN KEY projects_ibfk_1`);
   } catch (err) {
-    // Ignore error if foreign key doesn't exist
+    // ignore if FK does not exist
   }
 
-  // Ensure 'feedback' table exists
+  // ----------------- feedback table -----------------
   await pool.query(`
     CREATE TABLE IF NOT EXISTS feedback (
       id INT AUTO_INCREMENT PRIMARY KEY,
@@ -147,7 +149,7 @@ async function init() {
     ) ENGINE=InnoDB;
   `);
 
-  // Ensure 'rise_fund_requests' table exists
+  // ----------------- rise_fund_requests table -----------------
   await pool.query(`
     CREATE TABLE IF NOT EXISTS rise_fund_requests (
       id INT AUTO_INCREMENT PRIMARY KEY,
@@ -165,9 +167,32 @@ async function init() {
     ) ENGINE=InnoDB;
   `);
 
-  // ...existing code...
+  // ----------------- zk_users table (Zero Knowledge DigiLocker) -----------------
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS zk_users (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      aadhaar VARCHAR(12) NOT NULL UNIQUE,
+      name VARCHAR(255) NOT NULL,
+      dob DATE NOT NULL,
+      age INT NOT NULL,
+      gender VARCHAR(16) NOT NULL,
+      mobile VARCHAR(20) NOT NULL,
+      password VARCHAR(255) NOT NULL
+    ) ENGINE=InnoDB;
+  `);
 
-  // Test connection
+  // Insert some dummy zk users if empty
+  const [zkRows] = await pool.query(`SELECT COUNT(*) as count FROM zk_users`);
+  if (zkRows[0].count === 0) {
+    await pool.query(`
+      INSERT INTO zk_users (aadhaar, name, dob, age, gender, mobile, password)
+      VALUES
+      ('123412341234', 'Ramesh Kumar', '1999-05-14', 25, 'Male', '9876543210', '1234'),
+      ('555566667777', 'Sita Devi', '1998-08-10', 26, 'Female', '9123456789', '1111');
+    `);
+  }
+
+  // ----------------- test connection -----------------
   try {
     const conn = await pool.getConnection();
     conn.release();
