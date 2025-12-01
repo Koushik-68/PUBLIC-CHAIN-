@@ -1,0 +1,26 @@
+@import "tailwindcss";
+
+/* FORCE full-page dark background */
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: #0d051b !important; /* strongest override */
+  color: #fff;
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial;
+}
+
+/* Root container stays transparent so body background shows */
+#root {
+  background-color: transparent !important;
+  min-height: 100vh;
+}
+
+/* Fallback if Tailwind fails */
+body {
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial;
+}
