@@ -90,6 +90,12 @@ export default function Sidebar({ active = "Dashboard" }) {
           href="/public/zk/login"
           icon={<FaKey className="w-5 h-5" />}
         />
+        <SidebarButton
+          label="View All Fund Release"
+          active={active === "View All Fund Release"}
+          href="/public/view-all-fund-release"
+          icon={<FaKey className="w-5 h-5" />}
+        />
       </nav>
 
       {/* Footer */}

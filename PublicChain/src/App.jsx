@@ -10,6 +10,7 @@ import ViewAllProjects from "./pages/public/ViewAllProjects";
 import ViewAllFundRequests from "./pages/Department/ViewAllFundRequests";
 import TrackByLocationDept from "./pages/public/TrackByLocationDept";
 import SubmitFeedback from "./pages/public/SubmitFeedback";
+import ViewAllFundRelease from "./pages/public/ViewAllFundRelease";
 import VerifiedUsers from "./pages/Admin/VerifiedUsers";
 import AllProjects from "./pages/Admin/AllProjects";
 import FundRequests from "./pages/Admin/FundRequests";
@@ -20,6 +21,7 @@ import GovtBlockChainExplorer from "./pages/Government/GovtBlockChainExplorer";
 import GovernmentDashboard from "./pages/Government/GovernmentDashboard";
 import FundRelease from "./pages/Government/FundRelease";
 import GovernmentProjects from "./pages/Government/GovernmentProjects";
+import GovernmentFundRequests from "./pages/Government/GovernmentFundRequests";
 
 // ✅ Zero Knowledge pages (correct path)
 import ZKLogin from "./pages/public/ZeroKnowledge/ZKLogin";
@@ -87,6 +89,10 @@ function App() {
             <Route path="/public/zk/home" element={<DigiLockerHome />} />
             <Route path="/public/zk/generate" element={<GenerateProof />} />
             <Route path="/public/zk/verify" element={<VerifyProof />} />
+            <Route
+              path="/public/view-all-fund-release"
+              element={<ViewAllFundRelease />}
+            />
 
             {/* Auth & Admin */}
             <Route path="/login" element={<Login />} />
@@ -141,6 +147,10 @@ function App() {
             <Route
               path="/government/govt-blockchain"
               element={<GovtBlockChainExplorer />}
+            />
+            <Route
+              path="/government/fund-requests"
+              element={<GovernmentFundRequests />}
             />
 
             {/* Default */}

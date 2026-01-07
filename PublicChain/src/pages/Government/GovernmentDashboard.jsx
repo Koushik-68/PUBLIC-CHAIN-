@@ -377,7 +377,7 @@ export default function GovernmentDashboard() {
                 Release Fund
               </a>
               <a
-                href="/public/blockchain"
+                href="/government/govt-blockchain"
                 className="px-5 py-2 bg-indigo-600 text-white rounded font-semibold hover:bg-indigo-700 transition"
               >
                 View Blockchain

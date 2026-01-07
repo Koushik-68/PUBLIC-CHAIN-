@@ -21,6 +21,11 @@ const links = [
     icon: <FaMoneyCheckAlt />,
   },
   {
+    to: "/government/fund-requests",
+    label: "Department Fund Requests",
+    icon: <FaMoneyCheckAlt />,
+  },
+  {
     to: "/government/government-projects",
     label: "Projects",
     icon: <FaProjectDiagram />,
