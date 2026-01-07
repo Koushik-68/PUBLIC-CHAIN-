@@ -33,4 +33,14 @@ router.get("/blockchain/project/verify", async (req, res) => {
   }
 });
 
+// Detailed verify for project chain
+router.get("/blockchain/project/verify-detail", async (req, res) => {
+  try {
+    const info = await projectChain.verifyChainDetailed();
+    res.json({ success: true, ...info });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 module.exports = router;

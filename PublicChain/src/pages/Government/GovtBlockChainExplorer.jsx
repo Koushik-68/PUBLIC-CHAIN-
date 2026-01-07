@@ -36,6 +36,53 @@ export default function GovtBlockChainExplorer() {
     return num.toLocaleString("en-IN");
   };
 
+  // Treat different representations as truthy (1, "1", true, "true")
+  const isTruthy = (v) => v === 1 || v === "1" || v === true || v === "true";
+
+  // -------------------- Project data normalizer --------------------
+  const mapDeptIdToName = (id) => {
+    if (!id) return undefined;
+    const m = {
+      pwd: "Public Works Department",
+      edu: "Education Department",
+      health: "Health Department",
+    };
+    return m[id] || id;
+  };
+
+  const normalizeProjectKeys = (raw) => {
+    if (!raw || typeof raw !== "object") return raw || {};
+    const d = raw;
+    const departmentId = d.department_id || d.departmentId;
+    const blockchainVerifyVal =
+      d.blockchain_verify !== undefined
+        ? d.blockchain_verify
+        : d.blockchainVerify !== undefined
+        ? d.blockchainVerify
+        : d.verify !== undefined
+        ? d.verify
+        : d.blockchainVerified;
+    return {
+      project_name: d.project_name || d.projectName || "Untitled Project",
+      department_id: departmentId || "Unknown Department",
+      department:
+        d.department ||
+        d.department_name ||
+        mapDeptIdToName(departmentId) ||
+        "Unknown Department",
+      type: d.type || "-",
+      location: d.location || "-",
+      budget: d.budget,
+      officer: d.officer,
+      contact: d.contact,
+      start_date: d.start_date || d.startDate || "-",
+      end_date: d.end_date || d.endDate || "-",
+      status: d.status,
+      blockchain_verify: blockchainVerifyVal,
+      description: d.description,
+    };
+  };
+
   // -------------------- FUND BLOCKCHAIN STATE --------------------
   const [fundChain, setFundChain] = useState([]);
   const [fundValid, setFundValid] = useState(true);
@@ -44,6 +91,7 @@ export default function GovtBlockChainExplorer() {
   const [fundError, setFundError] = useState(null);
   const [fundSelectedBlock, setFundSelectedBlock] = useState(null);
   const [fundShowModal, setFundShowModal] = useState(false);
+  const [fundBreakInfo, setFundBreakInfo] = useState(null);
 
   // -------------------- PROJECT BLOCKCHAIN STATE --------------------
   const [projectChain, setProjectChain] = useState([]);
@@ -53,6 +101,7 @@ export default function GovtBlockChainExplorer() {
   const [projectError, setProjectError] = useState(null);
   const [projectSelectedBlock, setProjectSelectedBlock] = useState(null);
   const [projectShowModal, setProjectShowModal] = useState(false);
+  const [projectBreakInfo, setProjectBreakInfo] = useState(null);
 
   // -------------------- FUND: fetch chain + verify --------------------
   useEffect(() => {
@@ -88,6 +137,10 @@ export default function GovtBlockChainExplorer() {
         setFundLoadingVerify(true);
         const res = await axios.get("/api/blockchain/verify");
         setFundValid(!!res.data.valid);
+        try {
+          const det = await axios.get("/api/blockchain/verify-detail");
+          setFundBreakInfo(det.data);
+        } catch {}
       } catch (err) {
         console.error(err);
         setFundValid(false);
@@ -116,7 +169,8 @@ export default function GovtBlockChainExplorer() {
               projectData = JSON.parse(projectData);
             } catch (e) {}
           }
-          return { ...block, project_data: projectData };
+          const normalizedData = normalizeProjectKeys(projectData);
+          return { ...block, project_data: normalizedData };
         });
 
         setProjectChain(normalized);
@@ -134,6 +188,10 @@ export default function GovtBlockChainExplorer() {
         setProjectLoadingVerify(true);
         const res = await axios.get("/api/blockchain/project/verify");
         setProjectValid(!!res.data.valid);
+        try {
+          const det = await axios.get("/api/blockchain/project/verify-detail");
+          setProjectBreakInfo(det.data);
+        } catch {}
       } catch (err) {
         console.error(err);
         setProjectValid(false);
@@ -376,6 +434,10 @@ export default function GovtBlockChainExplorer() {
                           const fund = block.fund_data || {};
                           const isFirst = index === 0;
                           const isLast = index === fundChain.length - 1;
+                          const isBreakHere =
+                            fundBreakInfo &&
+                            fundBreakInfo.valid === false &&
+                            fundBreakInfo.breakIndex === index;
 
                           return (
                             <div
@@ -398,13 +460,24 @@ export default function GovtBlockChainExplorer() {
                               </div>
 
                               {/* Block card */}
-                              <div className="bg-white rounded-3xl shadow-sm border border-slate-200 p-5 md:p-6">
+                              <div
+                                className={`bg-white rounded-3xl shadow-sm border p-5 md:p-6 ${
+                                  isBreakHere
+                                    ? "border-rose-400"
+                                    : "border-slate-200"
+                                }`}
+                              >
                                 {/* Block header row */}
                                 <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-3">
                                   <div className="space-y-1">
                                     <div className="flex items-center gap-2 text-[11px] uppercase tracking-wide text-indigo-700 font-semibold">
                                       <FaCube className="w-3 h-3" />
                                       Block #{index + 1}
+                                      {isBreakHere && (
+                                        <span className="ml-2 px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200 text-[10px]">
+                                          Break Point
+                                        </span>
+                                      )}
                                     </div>
                                     <div className="flex items-center gap-2 text-[11px] uppercase tracking-wide text-slate-500 font-semibold">
                                       <FaBuilding className="w-4 h-4 text-indigo-400" />
@@ -739,6 +812,10 @@ export default function GovtBlockChainExplorer() {
                         const project = block.project_data || {};
                         const isFirst = index === 0;
                         const isLast = index === projectChain.length - 1;
+                        const isBreakHere =
+                          projectBreakInfo &&
+                          projectBreakInfo.valid === false &&
+                          projectBreakInfo.breakIndex === index;
 
                         return (
                           <button
@@ -762,13 +839,24 @@ export default function GovtBlockChainExplorer() {
                             </div>
 
                             {/* Block card */}
-                            <div className="flex-1 bg-white rounded-xl shadow-sm border border-slate-200 p-5 hover:shadow-md transition">
+                            <div
+                              className={`flex-1 bg-white rounded-xl shadow-sm border p-5 hover:shadow-md transition ${
+                                isBreakHere
+                                  ? "border-rose-400"
+                                  : "border-slate-200"
+                              }`}
+                            >
                               {/* Top row */}
                               <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-3">
                                 <div className="space-y-1">
                                   <div className="flex items-center gap-2 text-[11px] uppercase tracking-wide text-indigo-600 font-semibold">
                                     <FaCube className="w-3 h-3" />
                                     Block #{index + 1}
+                                    {isBreakHere && (
+                                      <span className="ml-2 px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200 text-[10px]">
+                                        Break Point
+                                      </span>
+                                    )}
                                   </div>
                                   <div className="flex items-center gap-2 text-[11px] uppercase tracking-wide text-slate-500 font-semibold">
                                     <FaBuilding className="w-4 h-4 text-indigo-400" />
@@ -985,7 +1073,7 @@ export default function GovtBlockChainExplorer() {
                               Blockchain Verified
                             </td>
                             <td className="py-2 text-slate-800">
-                              {projectSelectedData.blockchain_verify === 1
+                              {isTruthy(projectSelectedData.blockchain_verify)
                                 ? "Yes"
                                 : "No"}
                             </td>

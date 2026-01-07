@@ -33,4 +33,14 @@ router.get("/blockchain/verify", async (req, res) => {
   }
 });
 
+// Detailed verify (break index and mismatch info)
+router.get("/blockchain/verify-detail", async (req, res) => {
+  try {
+    const info = await fundChain.verifyChainDetailed();
+    res.json({ success: true, ...info });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 module.exports = router;

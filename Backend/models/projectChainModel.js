@@ -91,7 +91,49 @@ async function verifyChain() {
   return true;
 }
 
+async function verifyChainDetailed() {
+  const chain = await getChain();
+  for (let i = 0; i < chain.length; i++) {
+    const block = chain[i];
+    const prev_hash_expected = i === 0 ? null : chain[i - 1].block_hash;
+    let projectData = block.project_data;
+    if (typeof projectData === "string") {
+      try {
+        projectData = JSON.parse(projectData);
+      } catch (e) {}
+    }
+    const normalizedProjectData = normalize(projectData);
+    const blockContent = JSON.stringify({
+      projectData: normalizedProjectData,
+      prev_hash: prev_hash_expected,
+      timestamp: Number(block.timestamp),
+    });
+    const expected_hash = sha256(blockContent);
+    const expected_signature = sha256(
+      expected_hash + process.env.BLOCKCHAIN_SECRET
+    );
+    const broken =
+      block.block_hash !== expected_hash ||
+      block.signature !== expected_signature;
+    if (broken) {
+      return {
+        valid: false,
+        breakIndex: i,
+        blockId: block.id || null,
+        expected_hash,
+        actual_hash: block.block_hash,
+        expected_signature,
+        actual_signature: block.signature,
+        prev_hash_expected,
+        prev_hash_actual: block.prev_hash,
+      };
+    }
+  }
+  return { valid: true, breakIndex: null };
+}
+
 exports.addBlock = addBlock;
 exports.getChain = getChain;
 exports.verifyChain = verifyChain;
 exports.getLastBlock = getLastBlock;
+exports.verifyChainDetailed = verifyChainDetailed;

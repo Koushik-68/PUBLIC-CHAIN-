@@ -4,7 +4,9 @@ import {
   FaMapMarkedAlt,
   FaCommentDots,
   FaLink,
-  FaKey, // ✅ NEW icon
+  FaUserShield, // Zero Knowledge Proof
+  FaMoneyCheckAlt, // Fund Release
+  FaRobot, // Chatbot
 } from "react-icons/fa";
 
 export default function Sidebar({ active = "Dashboard" }) {
@@ -17,7 +19,6 @@ export default function Sidebar({ active = "Dashboard" }) {
       {/* Brand / Emblem */}
       <div className="relative z-10 mb-8 flex items-center gap-3 px-1 border-b border-slate-200 pb-5">
         <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-sky-600 to-indigo-700 flex items-center justify-center shadow-md shadow-sky-900/30">
-          {/* emblem */}
           <svg
             className="w-7 h-7 text-white"
             fill="none"
@@ -58,24 +59,35 @@ export default function Sidebar({ active = "Dashboard" }) {
           href="/public"
           icon={<FaHome className="w-5 h-5" />}
         />
+
         <SidebarButton
           label="View All Projects"
           active={active === "View All Projects"}
           href="/public/view-all-projects"
           icon={<FaFolderOpen className="w-5 h-5" />}
         />
+
         <SidebarButton
           label="Track by Location/Dept"
           active={active === "Track by Location/Dept"}
           href="/public/track-by-location-dept"
           icon={<FaMapMarkedAlt className="w-5 h-5" />}
         />
+
         <SidebarButton
           label="Blockchain Explorer"
           active={active === "Blockchain Explorer"}
           href="/public/blockchain-explorer"
           icon={<FaLink className="w-5 h-5" />}
         />
+
+        <SidebarButton
+          label="View All Fund Release"
+          active={active === "View All Fund Release"}
+          href="/public/view-all-fund-release"
+          icon={<FaMoneyCheckAlt className="w-5 h-5" />}
+        />
+
         <SidebarButton
           label="Submit Feedback"
           active={active === "Submit Feedback"}
@@ -83,18 +95,18 @@ export default function Sidebar({ active = "Dashboard" }) {
           icon={<FaCommentDots className="w-5 h-5" />}
         />
 
-        {/* ✅ NEW: Zero Knowledge menu item */}
+        <SidebarButton
+          label="Chatbot"
+          active={active === "ChatPage"}
+          href="/public/chatpage"
+          icon={<FaRobot className="w-5 h-5" />}
+        />
+
         <SidebarButton
           label="Zero Knowledge"
           active={active === "Zero Knowledge"}
           href="/public/zk/login"
-          icon={<FaKey className="w-5 h-5" />}
-        />
-        <SidebarButton
-          label="View All Fund Release"
-          active={active === "View All Fund Release"}
-          href="/public/view-all-fund-release"
-          icon={<FaKey className="w-5 h-5" />}
+          icon={<FaUserShield className="w-5 h-5" />}
         />
       </nav>
 
@@ -127,7 +139,6 @@ function SidebarButton({ label, active, href, icon }) {
         }
       `}
     >
-      {/* left active bar */}
       {active && (
         <span className="absolute -left-1 top-1/2 h-7 w-1 -translate-y-1/2 rounded-full bg-emerald-400 shadow shadow-emerald-500/60" />
       )}
@@ -144,7 +155,6 @@ function SidebarButton({ label, active, href, icon }) {
 
       <span className="truncate">{label}</span>
 
-      {/* Right hint */}
       <span
         className={`
           ml-auto text-[10px] uppercase tracking-wider

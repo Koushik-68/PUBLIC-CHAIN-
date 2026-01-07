@@ -17,13 +17,13 @@ import FundRequests from "./pages/Admin/FundRequests";
 import Feedback from "./pages/Admin/Feedback";
 import PendingRegistrations from "./pages/Admin/PendingRegistrations";
 import BlockchainExplorer from "./pages/public/BlockchainExplorer";
+import ChatPage from "./pages/public/ChatPage";
 import GovtBlockChainExplorer from "./pages/Government/GovtBlockChainExplorer";
 import GovernmentDashboard from "./pages/Government/GovernmentDashboard";
 import FundRelease from "./pages/Government/FundRelease";
 import GovernmentProjects from "./pages/Government/GovernmentProjects";
 import GovernmentFundRequests from "./pages/Government/GovernmentFundRequests";
 
-// ✅ Zero Knowledge pages (correct path)
 import ZKLogin from "./pages/public/ZeroKnowledge/ZKLogin";
 import DigiLockerHome from "./pages/public/ZeroKnowledge/DigiLockerHome";
 import GenerateProof from "./pages/public/ZeroKnowledge/GenerateProof";
@@ -83,6 +83,8 @@ function App() {
               path="/public/submit-feedback"
               element={<SubmitFeedback />}
             />
+
+            <Route path="/public/chatpage" element={<ChatPage />} />
 
             {/* ✅ Zero Knowledge DigiLocker routes */}
             <Route path="/public/zk/login" element={<ZKLogin />} />
