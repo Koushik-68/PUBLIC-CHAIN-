@@ -95,12 +95,12 @@ export default function Sidebar({ active = "Dashboard" }) {
           icon={<FaCommentDots className="w-5 h-5" />}
         />
 
-        <SidebarButton
+        {/* <SidebarButton
           label="Chatbot"
           active={active === "ChatPage"}
           href="/public/chatpage"
           icon={<FaRobot className="w-5 h-5" />}
-        />
+        /> */}
 
         <SidebarButton
           label="Zero Knowledge"
